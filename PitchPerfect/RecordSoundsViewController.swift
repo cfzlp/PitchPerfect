@@ -29,14 +29,15 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     }
 
     override func viewWillAppear(animated: Bool) {
-        // hide stop button
         stopButton.hidden = true
         recordButton.enabled = true
+        // make sure appropriate text is shown when returning from the segue
+        recordingInProgress.text = "Tap to Record"
     }
     
     @IBAction func recordAudio(sender: UIButton) {
         stopButton.hidden = false
-        recordingInProgress.hidden = false
+        recordingInProgress.text = "recording"
         recordButton.enabled = false
         println("in recordAudio")
         
@@ -64,9 +65,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder!, successfully flag: Bool) {
 
         if(flag) {
-            recordedAudio = RecordedAudio()
-            recordedAudio.filePathUrl = recorder.url
-            recordedAudio.title = recorder.url.lastPathComponent
+            recordedAudio = RecordedAudio(titled:recorder.url.lastPathComponent, inFilePathUrl:recorder.url)
             // perform the segue
             self.performSegueWithIdentifier("stopRecording", sender: recordedAudio)
         } else {
@@ -84,7 +83,6 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
     @IBAction func stopRecording(sender: UIButton) {
-        recordingInProgress.hidden = true
         audioRecorder.stop()
         var audioSession = AVAudioSession.sharedInstance()
         audioSession.setActive(false, error: nil)
