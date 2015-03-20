@@ -42,8 +42,7 @@ class PlaySoundsViewController: UIViewController {
     }
     
     @IBAction func stopAudio(sender: UIButton) {
-        audioPlayer.currentTime = 0.0
-        audioPlayer.stop()
+        stopAndResetAudio()
     }
     
     @IBAction func playChipmunkAudio(sender: UIButton) {
@@ -55,9 +54,7 @@ class PlaySoundsViewController: UIViewController {
     }
     
     func playAudioWithVariablePitch(pitch: Float){
-        audioPlayer.stop()
-        audioEngine.stop()
-        audioEngine.reset()
+        stopAndResetAudio()
         
         var audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attachNode(audioPlayerNode)
@@ -76,15 +73,19 @@ class PlaySoundsViewController: UIViewController {
     }
     
     func playAtRate(rate: float_t) {
-        audioPlayer.stop()
-        audioEngine.stop()
-        audioEngine.reset()
-        
-        // start playing from the beginning
-        audioPlayer.currentTime = 0.0
-        
+        stopAndResetAudio()
         audioPlayer.rate = rate
         audioPlayer.play()
+    }
+    
+    func stopAndResetAudio()
+    {
+        audioPlayer.stop()
+        // always start playing from the beginning
+        audioPlayer.currentTime = 0.0
+        
+        audioEngine.stop()
+        audioEngine.reset()
     }
     
     /*
